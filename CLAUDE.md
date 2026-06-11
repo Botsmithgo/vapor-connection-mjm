@@ -3,9 +3,23 @@
 Speculative rebuild of vaporconnectionmjm.com to pitch to the owner. Concept: **"The Shop at Night"** — neon storefront energy, dark OLED base + ember orange (their logo colors), conversion-built for foot traffic.
 
 ## Status
-- ✅ v2 built, verified (4 breakpoints, 0 console errors), pushed to GitHub (Botsmithgo/vapor-connection-mjm, private)
-- ⛔ NOT deployed publicly — Youssef said GitHub only, no Vercel (account's Vercel projects have SSO protection; sort hosting at sale time)
+- ✅ v2 built, verified (4 breakpoints, 0 console errors)
+- ✅ **LIVE (public): https://botsmithgo.github.io/vapor-connection-mjm/**
+- ✅ Repo: [Botsmithgo/vapor-connection-mjm](https://github.com/Botsmithgo/vapor-connection-mjm) — **public** (only `site/` code, no research)
 - 🎯 Pitch asset: `../outputs/pitch-vapor-connection.html` (self-contained, images embedded)
+- ⛔ No Vercel (per Youssef). Netlify was a temp test, now removed.
+
+## Deploy (GitHub Pages, static export)
+Hosted via the `gh-pages` branch (deploy-from-branch). To redeploy after changes:
+```bash
+NEXT_PUBLIC_BASE_PATH=/vapor-connection-mjm GH_PAGES=true npm run build
+touch out/.nojekyll
+npx gh-pages@6 -d out -b gh-pages --dotfiles -m "Deploy"
+```
+- `GH_PAGES=true` → sets Next basePath/assetPrefix to `/vapor-connection-mjm`
+- `NEXT_PUBLIC_BASE_PATH` → consumed by `src/lib/asset.ts` to prefix `next/image` src (basePath is NOT auto-applied to unoptimized static-export images — that's why this helper exists; wrap every public image path in `asset()`)
+- `.nojekyll` is required so GitHub serves the `_next/` folder
+- Pages source: `gh-pages` branch, `/` root (set via GitHub API)
 
 ## Run
 ```bash

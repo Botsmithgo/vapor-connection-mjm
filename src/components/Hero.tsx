@@ -1,7 +1,7 @@
 import { MapPin, Phone, Star, ShieldCheck } from "lucide-react";
 import { BUSINESS } from "@/data/business";
 import { VaporHaze } from "@/components/VaporHaze";
-import { SmokeWisps } from "@/components/SmokeWisps";
+import { VaporCanvas } from "@/components/VaporCanvas";
 import { NeonOpenSign } from "@/components/NeonOpenSign";
 import { WordRotate } from "@/components/WordRotate";
 import { FloatingProducts } from "@/components/FloatingProducts";
@@ -15,7 +15,7 @@ export function Hero() {
   return (
     <section id="top" className="relative overflow-hidden">
       <VaporHaze />
-      <SmokeWisps />
+      <VaporCanvas />
 
       <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 px-4 pb-16 pt-12 sm:px-6 sm:pt-16 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8 lg:pb-24 lg:pt-20">
         {/* ——— Left: the pitch ——— */}
