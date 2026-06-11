@@ -1,26 +1,386 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* ——— Vapor Connection palette (from design-dna.md) ——— */
+  --color-smoke: #0a0a0b;
+  --color-coal: #141417;
+  --color-ash: #1e1e23;
+  --color-ember: #f26522;
+  --color-ember-hot: #ff7a1a;
+  --color-silver: #b8bcc4;
+  --color-cream: #fafaf8;
+  --color-open: #4ade80;
+  --color-closing: #fbbf24;
+
+  --font-display: var(--font-barlow-condensed);
+  --font-sans: var(--font-barlow);
+  --font-neon: var(--font-tilt-neon);
+
+  --ease-luxury: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --shadow-ember-glow: 0 0 24px 2px rgba(242, 101, 34, 0.45);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 96px;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-smoke);
+  color: var(--color-cream);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(242, 101, 34, 0.35);
+  color: var(--color-cream);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-ember);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ——— Hero entrance (CSS keyframes — Motion 12 + React 19 hydration trap) ——— */
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.anim-rise {
+  animation: hero-rise 0.9s var(--ease-luxury) both;
+}
+.anim-d-1 { animation-delay: 0.1s; }
+.anim-d-2 { animation-delay: 0.25s; }
+.anim-d-3 { animation-delay: 0.4s; }
+.anim-d-4 { animation-delay: 0.55s; }
+.anim-d-5 { animation-delay: 0.7s; }
+
+/* ——— Vapor haze: blurred gradient blobs, transform-only drift ———
+   Blur lives on the CONTAINER (one filter pass), blobs animate transform. */
+.haze-field {
+  filter: blur(90px);
+  pointer-events: none;
+}
+@keyframes haze-drift-a {
+  0%   { transform: translate3d(-8%, 4%, 0) scale(1) rotate(0deg); }
+  50%  { transform: translate3d(10%, -8%, 0) scale(1.25) rotate(40deg); }
+  100% { transform: translate3d(-8%, 4%, 0) scale(1) rotate(0deg); }
+}
+@keyframes haze-drift-b {
+  0%   { transform: translate3d(6%, -4%, 0) scale(1.1) rotate(0deg); }
+  50%  { transform: translate3d(-12%, 10%, 0) scale(0.9) rotate(-30deg); }
+  100% { transform: translate3d(6%, -4%, 0) scale(1.1) rotate(0deg); }
+}
+@keyframes haze-drift-c {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  50%  { transform: translate3d(8%, 12%, 0) scale(1.3); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+.haze-a { animation: haze-drift-a 32s ease-in-out infinite; will-change: transform; }
+.haze-b { animation: haze-drift-b 38s ease-in-out infinite; will-change: transform; }
+.haze-c { animation: haze-drift-c 26s ease-in-out infinite; will-change: transform; }
+
+/* ——— Film grain: static feTurbulence baked as data-URI. Never animated. ——— */
+.grain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ——— Glow pulse: pre-rendered glow on ::after, animate OPACITY only ——— */
+@keyframes glow-breathe {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 1; }
+}
+.glow-cta {
+  position: relative;
+  isolation: isolate;
+}
+.glow-cta::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  z-index: -1;
+  border-radius: inherit;
+  box-shadow: 0 0 28px 4px rgba(242, 101, 34, 0.55);
+  animation: glow-breathe 3.2s ease-in-out infinite;
+}
+
+/* ——— Deal ticker: duplicated track, translateX loop, pause on hover ——— */
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.ticker-track {
+  animation: ticker-scroll 36s linear infinite;
+  will-change: transform;
+}
+.ticker:hover .ticker-track,
+.ticker:focus-within .ticker-track {
+  animation-play-state: paused;
+}
+
+/* ——— Neon sign: flicker-on (one-shot) + hum (glow layer opacity) ——— */
+@keyframes neon-flicker-on {
+  0% { opacity: 0; }
+  7% { opacity: 1; }
+  10% { opacity: 0.2; }
+  15% { opacity: 1; }
+  18% { opacity: 0.1; }
+  22% { opacity: 1; }
+  28% { opacity: 0.4; }
+  34% { opacity: 1; }
+  100% { opacity: 1; }
+}
+.neon-on {
+  animation: neon-flicker-on 1.7s steps(1, end) both;
+}
+@keyframes neon-hum {
+  0%, 100% { opacity: 0.65; }
+  50% { opacity: 1; }
+}
+.neon-hum {
+  animation: neon-hum 3.4s ease-in-out infinite;
+}
+.neon-tube {
+  text-shadow:
+    0 0 6px rgba(255, 122, 26, 0.9),
+    0 0 14px rgba(242, 101, 34, 0.7),
+    0 0 32px rgba(242, 101, 34, 0.5);
+}
+.neon-tube-dim {
+  text-shadow: 0 0 8px rgba(184, 188, 196, 0.35);
+}
+
+/* ——— Outline display type (ticker alternates filled/outline) ——— */
+.text-outline {
+  -webkit-text-stroke: 1.5px rgba(250, 250, 248, 0.55);
+  color: transparent;
+}
+
+/* ——— Floating product cards: slow idle drift per depth layer ——— */
+@keyframes float-a {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-6deg); }
+  50% { transform: translate3d(0, -14px, 0) rotate(-4.5deg); }
+}
+@keyframes float-b {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(5deg); }
+  50% { transform: translate3d(0, -20px, 0) rotate(6.5deg); }
+}
+@keyframes float-c {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-2deg); }
+  50% { transform: translate3d(0, -10px, 0) rotate(-3deg); }
+}
+.float-a { animation: float-a 7s ease-in-out infinite; }
+.float-b { animation: float-b 8.5s ease-in-out infinite; animation-delay: 0.8s; }
+.float-c { animation: float-c 6s ease-in-out infinite; animation-delay: 1.6s; }
+
+/* ——— Logo levitation: floating in vapor ——— */
+@keyframes levitate {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.anim-levitate {
+  animation: levitate 6s ease-in-out infinite;
+}
+
+/* ——— Headline gradient shimmer (one element, slow) ——— */
+@keyframes shimmer-x {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.text-shimmer {
+  background-image: linear-gradient(
+    100deg,
+    #f26522 0%,
+    #ff9d5c 28%,
+    #ffd0a8 50%,
+    #ff9d5c 72%,
+    #f26522 100%
+  );
+  background-size: 220% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: shimmer-x 7s ease-in-out infinite;
+}
+
+/* ——— Smoke wisps: blurred puffs rising behind the hero logo ——— */
+@keyframes wisp-rise {
+  0% {
+    transform: translate3d(0, 30%, 0) scale(0.7);
+    opacity: 0;
+  }
+  18% {
+    opacity: var(--wisp-peak, 0.5);
+  }
+  100% {
+    transform: translate3d(var(--wisp-drift, 30px), -130%, 0) scale(1.5);
+    opacity: 0;
+  }
+}
+.wisp {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(26px);
+  background: radial-gradient(
+    circle at 50% 55%,
+    rgba(232, 236, 242, 0.35),
+    rgba(232, 236, 242, 0.07) 60%,
+    transparent 75%
+  );
+  animation: wisp-rise var(--wisp-dur, 9s) linear infinite;
+  animation-delay: var(--wisp-delay, 0s);
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+
+/* ——— Border beam: rotating ember bar behind a masked ring (transform-only) ——— */
+@keyframes beam-spin {
+  to { transform: rotate(360deg); }
+}
+.beam-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+.beam-ring::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 240%;
+  aspect-ratio: 1;
+  margin-left: -120%;
+  margin-top: -120%;
+  background: conic-gradient(
+    transparent 0deg,
+    transparent 280deg,
+    rgba(255, 122, 26, 0.5) 320deg,
+    #ff7a1a 345deg,
+    #ffd0a8 355deg,
+    transparent 360deg
+  );
+  animation: beam-spin 5.5s linear infinite;
+  will-change: transform;
+}
+
+/* ——— Mouse-follow ember glow (set --mx/--my from JS) ——— */
+.glow-card {
+  position: relative;
+}
+.glow-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(242, 101, 34, 0.14),
+    transparent 65%
+  );
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+@media (hover: hover) {
+  .glow-card:hover::before {
+    opacity: 1;
+  }
+}
+
+/* ——— Eyebrow rule: ember line draws in next to section labels ——— */
+@keyframes rule-draw {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+.eyebrow-rule::after {
+  content: "";
+  display: inline-block;
+  width: 56px;
+  height: 2px;
+  margin-left: 14px;
+  vertical-align: middle;
+  background: linear-gradient(90deg, #f26522, transparent);
+  transform-origin: left center;
+  animation: rule-draw 0.8s var(--ease-luxury) both;
+}
+
+/* ——— Open-now dot pulse ——— */
+@keyframes ping-soft {
+  0% { transform: scale(1); opacity: 0.9; }
+  70%, 100% { transform: scale(2.4); opacity: 0; }
+}
+.dot-ping::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: currentColor;
+  animation: ping-soft 2.2s var(--ease-luxury) infinite;
+}
+
+/* ——— Glass panels: always bordered on dark (anti-pattern guard) ——— */
+.glass {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* ——— Logo treatment on dark ——— */
+.logo-glow {
+  filter: drop-shadow(0 0 24px rgba(242, 101, 34, 0.35));
+}
+
+/* ——— Hide scrollbar on snap carousels ——— */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ——— Reduced motion: everything settles ——— */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+  .ticker-track {
+    animation: none;
+    transform: none;
+  }
+  .haze-a, .haze-b, .haze-c {
+    animation: none;
+  }
 }
