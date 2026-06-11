@@ -6,6 +6,7 @@ import { StaggerItem } from "@/components/StaggerItem";
 import { GlowCard } from "@/components/GlowCard";
 import { OpenNowBadge } from "@/components/OpenNowBadge";
 import { cn } from "@/lib/utils";
+import { asset } from "@/lib/asset";
 
 const TILE_BASE =
   "group relative flex h-full min-h-[230px] flex-col justify-end overflow-hidden rounded-3xl border border-white/10 bg-ash transition-all duration-300 hover:-translate-y-1 hover:border-ember/50";
@@ -19,7 +20,7 @@ function ProductTile({
     <GlowCard className="rounded-3xl">
       <article className={TILE_BASE}>
         <Image
-          src={cat.image}
+          src={asset(cat.image)}
           alt={cat.name}
           fill
           sizes={cat.big ? "(max-width: 640px) 80vw, 50vw" : "(max-width: 640px) 80vw, 25vw"}

@@ -6,6 +6,7 @@ import { Phone } from "lucide-react";
 import { BUSINESS } from "@/data/business";
 import { OpenNowBadge } from "@/components/OpenNowBadge";
 import { cn } from "@/lib/utils";
+import { asset } from "@/lib/asset";
 
 const NAV = [
   { href: "#deals", label: "Deals" },
@@ -37,7 +38,7 @@ export function Header() {
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
         <a href="#top" aria-label={`${BUSINESS.name} — home`} className="flex items-center gap-3">
           <Image
-            src="/images/vc-logo-nav.png"
+            src={asset("/images/vc-logo-nav.png")}
             alt={BUSINESS.name}
             width={64}
             height={45}

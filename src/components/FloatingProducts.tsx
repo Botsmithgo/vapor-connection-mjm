@@ -9,6 +9,7 @@ import {
   useTransform,
   useReducedMotion,
 } from "motion/react";
+import { asset } from "@/lib/asset";
 
 /**
  * Floating product cluster — the shop window at night. Three of their
@@ -66,7 +67,7 @@ export function FloatingProducts() {
       >
         <div className="float-c overflow-hidden rounded-2xl border border-white/10 shadow-[0_24px_60px_rgba(0,0,0,0.55)]">
           <Image
-            src="/images/cat-tanks.png"
+            src={asset("/images/cat-tanks.png")}
             alt=""
             width={600}
             height={400}
@@ -83,7 +84,7 @@ export function FloatingProducts() {
       >
         <div className="float-b overflow-hidden rounded-2xl border border-white/10 shadow-[0_24px_60px_rgba(0,0,0,0.6)]">
           <Image
-            src="/images/cat-mods.png"
+            src={asset("/images/cat-mods.png")}
             alt=""
             width={600}
             height={400}
@@ -100,7 +101,7 @@ export function FloatingProducts() {
       >
         <div className="float-a overflow-hidden rounded-2xl border border-ember/30 shadow-[0_32px_80px_rgba(0,0,0,0.65),0_0_40px_rgba(242,101,34,0.18)]">
           <Image
-            src="/images/cat-disposables.png"
+            src={asset("/images/cat-disposables.png")}
             alt=""
             width={600}
             height={400}

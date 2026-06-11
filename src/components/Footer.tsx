@@ -5,6 +5,7 @@ import {
   AGE_POLICY,
 } from "@/data/business";
 import { FacebookIcon, InstagramIcon } from "@/components/icons";
+import { asset } from "@/lib/asset";
 
 export function Footer() {
   return (
@@ -13,7 +14,7 @@ export function Footer() {
         <div className="flex flex-col items-start justify-between gap-10 md:flex-row">
           <div className="max-w-sm">
             <Image
-              src="/images/vc-logo-nav.png"
+              src={asset("/images/vc-logo-nav.png")}
               alt={BUSINESS.name}
               width={96}
               height={67}

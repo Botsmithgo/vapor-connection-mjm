@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { AGE_POLICY, BUSINESS } from "@/data/business";
+import { asset } from "@/lib/asset";
 
 const STORAGE_KEY = "vc-age-verified";
 
@@ -41,7 +42,7 @@ export function AgeGate() {
     >
       <div className="agegate-panel relative mx-4 w-full max-w-md rounded-2xl border border-white/10 bg-coal p-8 text-center shadow-2xl shadow-black/60">
         <Image
-          src="/images/vc-logo-nav.png"
+          src={asset("/images/vc-logo-nav.png")}
           alt={BUSINESS.name}
           width={120}
           height={84}
