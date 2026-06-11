@@ -45,7 +45,9 @@ export function VelocityTicker() {
     const raw = smoothVelocity.get();
     if (raw > 80) directionRef.current = 1;
     else if (raw < -80) directionRef.current = -1;
-    const moveBy = directionRef.current * -42 * v * (delta / 1000);
+    // baseX is consumed as a percentage (wrap -50..0), so units are %/sec.
+    // ~1.5%/sec → a full loop every ~33s at rest; scroll velocity multiplies it.
+    const moveBy = directionRef.current * -1.5 * v * (delta / 1000);
     baseX.set(baseX.get() + moveBy);
   });
 
